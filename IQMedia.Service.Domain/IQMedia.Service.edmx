@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="IQMedia.Service.Domain.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="IQMediaServiceDomainStoreContainer" />
+        <Function Name="usp_svc_DiscExp_SelectClientDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerGUID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="usp_v4_IQClient_CustomSettings_SelectSentimentSettingsByClientGuid" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientGuid" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="usp_v4_IQSolrEngines_SelectAll" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Requestor" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="usp_v5_svc_Report_Discovery_Insert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ReportID" Type="bigint" Mode="In" />
+          <Parameter Name="XML" Type="xml" Mode="In" />
+        </Function>
+        <Function Name="usp_v5_svc_Report_Feeds_Insert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ReportID" Type="bigint" Mode="In" />
+          <Parameter Name="XML" Type="xml" Mode="In" />
+        </Function>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="IQMedia.Service.Domain" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="IQMediaEntities" annotation:LazyLoadingEnabled="true" >
+          <FunctionImport Name="InsertFeedsReport" ReturnType="Collection(Int32)">
+            <Parameter Name="ReportID" Mode="In" Type="Int64" />
+            <Parameter Name="XML" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="InsertDiscoveryReport" ReturnType="Collection(Int32)">
+            <Parameter Name="ReportID" Mode="In" Type="Int64" />
+            <Parameter Name="XML" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetSentimentSettingsByClientGuid" ReturnType="Collection(IQMedia.Service.Domain.SentimentSettings)">
+          <Parameter Name="ClientGuid" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="GetSolrEngines" ReturnType="Collection(IQMedia.Service.Domain.SolrEngines)" >
+          <Parameter Name="Requestor" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="FeedsReportOutPut" >
+          <Property Type="Int64" Name="ID" Nullable="false" />
+          <Property Type="String" Name="ArticleID" Nullable="false" />
+          <Property Type="String" Name="MediaType" Nullable="false" />
+          <Property Type="String" Name="Content" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="SentimentSettings" >
+          <Property Type="String" Name="TVLowThreshold" Nullable="false" />
+          <Property Type="String" Name="TVHighThreshold" Nullable="false" />
+          <Property Type="String" Name="NMLowThreshold" Nullable="false" />
+          <Property Type="String" Name="NMHighThreshold" Nullable="false" />
+          <Property Type="String" Name="SMLowThreshold" Nullable="false" />
+          <Property Type="String" Name="SMHighThreshold" Nullable="false" />
+          <Property Type="String" Name="TwitterLowThreshold" Nullable="false" />
+          <Property Type="String" Name="TwitterHighThreshold" Nullable="false" />
+          <Property Type="String" Name="PQHighThreshold" Nullable="false" />
+          <Property Type="String" Name="PQLowThreshold" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="SolrEngines">
+          <Property Type="String" Name="MediaType" Nullable="false" MaxLength="2" />
+          <Property Type="DateTime" Name="FromDate" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="ToDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="BaseUrl" Nullable="true" MaxLength="255" />
+        </ComplexType>
+        <ComplexType Name="RootPath" >
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="StoragePath" Nullable="false" />
+          <Property Type="String" Name="StreamSuffixPath" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="IQMediaServiceDomainStoreContainer" CdmEntityContainer="IQMediaEntities" >
+          <FunctionImportMapping FunctionImportName="InsertFeedsReport" FunctionName="IQMedia.Service.Domain.Store.usp_v5_svc_Report_Feeds_Insert">
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="InsertDiscoveryReport" FunctionName="IQMedia.Service.Domain.Store.usp_v5_svc_Report_Discovery_Insert" />
+          <FunctionImportMapping FunctionImportName="GetSentimentSettingsByClientGuid" FunctionName="IQMedia.Service.Domain.Store.usp_v4_IQClient_CustomSettings_SelectSentimentSettingsByClientGuid">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="IQMedia.Service.Domain.SentimentSettings">
+                <ScalarProperty Name="TVLowThreshold" ColumnName="TVLowThreshold" />
+                <ScalarProperty Name="TVHighThreshold" ColumnName="TVHighThreshold" />
+                <ScalarProperty Name="NMLowThreshold" ColumnName="NMLowThreshold" />
+                <ScalarProperty Name="NMHighThreshold" ColumnName="NMHighThreshold" />
+                <ScalarProperty Name="SMLowThreshold" ColumnName="SMLowThreshold" />
+                <ScalarProperty Name="SMHighThreshold" ColumnName="SMHighThreshold" />
+                <ScalarProperty Name="TwitterLowThreshold" ColumnName="TwitterLowThreshold" />
+                <ScalarProperty Name="TwitterHighThreshold" ColumnName="TwitterHighThreshold" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetSolrEngines" FunctionName="IQMedia.Service.Domain.Store.usp_v4_IQSolrEngines_SelectAll">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="IQMedia.Service.Domain.SolrEngines">
+                <ScalarProperty Name="MediaType" ColumnName="MediaType" />
+                <ScalarProperty Name="FromDate" ColumnName="FromDate" />
+                <ScalarProperty Name="ToDate" ColumnName="ToDate" />
+                <ScalarProperty Name="BaseUrl" ColumnName="BaseUrl" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="IQMedia.Service" />
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>
